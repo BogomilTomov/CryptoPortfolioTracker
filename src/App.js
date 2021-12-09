@@ -1,8 +1,21 @@
-import {StrictMode} from "react";
+import {StrictMode, useState, useEffect} from "react";
 import { render } from "react-dom";
+import Card from "./Card";
 
 const App = () => {
-  return <div>Hi</div>;
+    const [portfolioTokens, setPortfolioTokens] = useState([]);
+    
+    useEffect(() => {
+        setPortfolioTokens(JSON.parse(localStorage.getItem('portfolioTokens')));
+      }, []);
+
+  return (
+      <div>
+          {portfolioTokens.map(token =>
+            <Card key={token} tokenName={token}/>
+          )}
+      </div>
+  )
 };
 
 render(

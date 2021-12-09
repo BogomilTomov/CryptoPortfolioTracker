@@ -30775,20 +30775,75 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-jsx-runtime.development.js');
 }
-},{"./cjs/react-jsx-runtime.development.js":"../node_modules/react/cjs/react-jsx-runtime.development.js"}],"App.js":[function(require,module,exports) {
+},{"./cjs/react-jsx-runtime.development.js":"../node_modules/react/cjs/react-jsx-runtime.development.js"}],"Card.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _reactDom = require("react-dom");
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+var Card = function Card(_ref) {
+  var tokenName = _ref.tokenName;
+  return (
+    /*#__PURE__*/
+    (0, _jsxRuntime.jsx)("div", {
+      children: tokenName
+    })
+  );
+};
+
+var _default = Card;
+exports.default = _default;
+},{"react-dom":"../node_modules/react-dom/index.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 var _react = require("react");
 
 var _reactDom = require("react-dom");
 
+var _Card = _interopRequireDefault(require("./Card"));
+
 var _jsxRuntime = require("react/jsx-runtime");
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var App = function App() {
+  var _useState = (0, _react.useState)([]),
+      _useState2 = _slicedToArray(_useState, 2),
+      portfolioTokens = _useState2[0],
+      setPortfolioTokens = _useState2[1];
+
+  (0, _react.useEffect)(function () {
+    setPortfolioTokens(JSON.parse(localStorage.getItem('portfolioTokens')));
+  }, []);
   return (
     /*#__PURE__*/
     (0, _jsxRuntime.jsx)("div", {
-      children: "Hi"
+      children: portfolioTokens.map(function (token) {
+        return (
+          /*#__PURE__*/
+          (0, _jsxRuntime.jsx)(_Card.default, {
+            tokenName: token
+          }, token)
+        );
+      })
     })
   );
 };
@@ -30800,7 +30855,7 @@ var App = function App() {
   /*#__PURE__*/
   (0, _jsxRuntime.jsx)(App, {})
 }), document.getElementById("root"));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./Card":"Card.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -30828,7 +30883,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38343" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38777" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
