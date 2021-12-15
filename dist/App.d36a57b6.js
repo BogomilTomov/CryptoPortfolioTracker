@@ -30788,25 +30788,56 @@ var _reactDom = require("react-dom");
 var _jsxRuntime = require("react/jsx-runtime");
 
 var Card = function Card(_ref) {
-  var tokenName = _ref.tokenName;
+  var token = _ref.token;
   return (
     /*#__PURE__*/
     (0, _jsxRuntime.jsx)("div", {
-      children: tokenName
+      children:
+      /*#__PURE__*/
+      (0, _jsxRuntime.jsxs)("tr", {
+        children: [
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("td", {
+          children: token.name
+        }),
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("td", {
+          children: token.amount
+        }),
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("td", {}),
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("td", {}),
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("td", {}),
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("td", {})]
+      })
     })
   );
 };
 
 var _default = Card;
 exports.default = _default;
-},{"react-dom":"../node_modules/react-dom/index.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"App.js":[function(require,module,exports) {
+},{"react-dom":"../node_modules/react-dom/index.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"../configData.json":[function(require,module,exports) {
+module.exports = {
+  "LOCAL_STORAGE_VARIABLE_NAME": "portfolioData"
+};
+},{}],"MainPage.js":[function(require,module,exports) {
 "use strict";
 
-var _react = require("react");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 
 var _reactDom = require("react-dom");
 
+var _react = require("react");
+
 var _Card = _interopRequireDefault(require("./Card"));
+
+var _configData = _interopRequireDefault(require("../configData.json"));
 
 var _jsxRuntime = require("react/jsx-runtime");
 
@@ -30824,26 +30855,149 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var App = function App() {
-  var _useState = (0, _react.useState)([]),
+var MainPage = function MainPage() {
+  var _useState = (0, _react.useState)({}),
       _useState2 = _slicedToArray(_useState, 2),
-      portfolioTokens = _useState2[0],
-      setPortfolioTokens = _useState2[1];
+      portfolioData = _useState2[0],
+      setPortfolioData = _useState2[1];
 
   (0, _react.useEffect)(function () {
-    setPortfolioTokens(JSON.parse(localStorage.getItem('portfolioTokens')));
+    var localStorageVariable = _configData.default.LOCAL_STORAGE_VARIABLE_NAME;
+    setPortfolioData(JSON.parse(localStorage.getItem("portfolioData")));
   }, []);
   return (
     /*#__PURE__*/
     (0, _jsxRuntime.jsx)("div", {
-      children: portfolioTokens.map(function (token) {
-        return (
+      children:
+      /*#__PURE__*/
+      (0, _jsxRuntime.jsxs)("div", {
+        className: "app-container",
+        children: [
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsxs)("div", {
+          className: "top-section",
+          children: [
           /*#__PURE__*/
-          (0, _jsxRuntime.jsx)(_Card.default, {
-            tokenName: token
-          }, token)
-        );
+          (0, _jsxRuntime.jsxs)("div", {
+            className: "current-balance",
+            children: [
+            /*#__PURE__*/
+            (0, _jsxRuntime.jsx)("div", {
+              className: "current-balance-label",
+              children: "Current Balance"
+            }),
+            /*#__PURE__*/
+            (0, _jsxRuntime.jsx)("div", {
+              className: "current-balance-amount",
+              children: "1000"
+            })]
+          }),
+          /*#__PURE__*/
+          (0, _jsxRuntime.jsx)("button", {
+            className: "ui-control add-new-button",
+            children: "Add New"
+          })]
+        }),
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsxs)("div", {
+          children: [
+          /*#__PURE__*/
+          (0, _jsxRuntime.jsx)("div", {
+            className: "token-list-heading",
+            children: "Your Tokens"
+          }),
+          /*#__PURE__*/
+          (0, _jsxRuntime.jsxs)("table", {
+            className: "tokens-table",
+            children: [
+            /*#__PURE__*/
+            (0, _jsxRuntime.jsx)("thead", {
+              children:
+              /*#__PURE__*/
+              (0, _jsxRuntime.jsxs)("tr", {
+                children: [
+                /*#__PURE__*/
+                (0, _jsxRuntime.jsx)("th", {
+                  children: "Name"
+                }),
+                /*#__PURE__*/
+                (0, _jsxRuntime.jsx)("th", {
+                  children: "Price"
+                }),
+                /*#__PURE__*/
+                (0, _jsxRuntime.jsx)("th", {
+                  children: "24H"
+                }),
+                /*#__PURE__*/
+                (0, _jsxRuntime.jsx)("th", {
+                  children: "Amount"
+                }),
+                /*#__PURE__*/
+                (0, _jsxRuntime.jsx)("th", {
+                  children: "Profit"
+                }),
+                /*#__PURE__*/
+                (0, _jsxRuntime.jsx)("th", {
+                  children: "Actions"
+                })]
+              })
+            }),
+            /*#__PURE__*/
+            (0, _jsxRuntime.jsx)("tbody", {
+              children: portfolioData.tokens ? portfolioData.tokens.map(function (token) {
+                return (
+                  /*#__PURE__*/
+                  (0, _jsxRuntime.jsxs)("tr", {
+                    children: [
+                    /*#__PURE__*/
+                    (0, _jsxRuntime.jsx)("td", {
+                      children: token.name
+                    }),
+                    /*#__PURE__*/
+                    (0, _jsxRuntime.jsx)("td", {
+                      children: token.amount
+                    }),
+                    /*#__PURE__*/
+                    (0, _jsxRuntime.jsx)("td", {}),
+                    /*#__PURE__*/
+                    (0, _jsxRuntime.jsx)("td", {}),
+                    /*#__PURE__*/
+                    (0, _jsxRuntime.jsx)("td", {}),
+                    /*#__PURE__*/
+                    (0, _jsxRuntime.jsx)("td", {})]
+                  })
+                );
+              }) : ""
+            })]
+          })]
+        })]
       })
+    })
+  );
+};
+
+var _default = MainPage;
+exports.default = _default;
+},{"react-dom":"../node_modules/react-dom/index.js","react":"../node_modules/react/index.js","./Card":"Card.js","../configData.json":"../configData.json","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"App.js":[function(require,module,exports) {
+"use strict";
+
+var _react = require("react");
+
+var _reactDom = require("react-dom");
+
+var _MainPage = _interopRequireDefault(require("./MainPage"));
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var App = function App() {
+  return (
+    /*#__PURE__*/
+    (0, _jsxRuntime.jsx)("div", {
+      children:
+      /*#__PURE__*/
+      (0, _jsxRuntime.jsx)(_MainPage.default, {})
     })
   );
 };
@@ -30855,7 +31009,7 @@ var App = function App() {
   /*#__PURE__*/
   (0, _jsxRuntime.jsx)(App, {})
 }), document.getElementById("root"));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./Card":"Card.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./MainPage":"MainPage.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -30883,7 +31037,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38777" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38743" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

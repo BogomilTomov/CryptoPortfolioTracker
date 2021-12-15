@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.app-container {
+    max-width: 500px;
+    min-width: 200px;
+    border: 1px black solid;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.current-balance-amount {
+    font-size: 32px;
+}
+
+.ui-control {
+    border-radius: 5px;
+}
+
+.add-new-button {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 6px;
+}
+
+.tokens-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tokens-table thead tr {
+    text-align: left;
+    font-weight: bold;
+}
+
+.tokens-table tr {
+    border-bottom: 1px solid black;
+}
+
+.tokens-table th,
+.tokens-table td {
+    padding: 12px;
+}
+
+.token-list-heading {
+    font-size: 32px;
+    font-weight: bold;
+}
