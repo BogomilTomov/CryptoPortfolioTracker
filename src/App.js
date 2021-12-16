@@ -1,13 +1,18 @@
 import {StrictMode} from "react";
 import { render } from "react-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import MainPage from "./MainPage";
+import TokenDetails from "./TokenDetails";
 
 const App = () => {
   return (
-    <div>
-        <MainPage/>
-    </div>
-)
+    <Router>
+      <Routes>
+          <Route path="/" element={<MainPage />}/>
+          <Route path="/token" element={<TokenDetails />}/>
+      </Routes>
+    </Router>
+  )
 };
 
 render(
