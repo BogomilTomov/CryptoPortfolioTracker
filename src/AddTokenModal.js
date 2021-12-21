@@ -3,12 +3,13 @@ import {useEffect, useState} from "react";
 import TokensData from "../tokens.json";
 import {FaChevronRight, FaTimes, IconContext} from "react-icons/fa";
 import AddTokenList from "./AddTokenList";
+import AddTransaction from "./AddTransaction";
 
 const AddTokenModal = ({isOpen}) => {
     const[allTokens, setAllTokens] = useState(TokensData.data);
     const[state, setState] = useState({
-        tokenList: TokensData.data.slice(0,100),
-        search: ""
+        allTokens: TokensData.data,
+        tokenSelected: null
     });
     
     useEffect(() => {
@@ -26,54 +27,21 @@ const AddTokenModal = ({isOpen}) => {
         //setAllTokens(TokensData.data);
     });
 
-    useEffect (() => {
+    const selectToken = (token) => {
         setState({
             ...state,
-            tokenList: filterTokens(state.search)
+            tokenSelected: token
         })
-    }, [state.search])
-    
-    const handleChange = e => {
-        setState({
-            ...state,
-            [e.target.name]: e.target.value,
-        })
-    }
-    
-    const filterTokens = input => {
-        input = input.toLowerCase();
-        if (input.trim().length === 0) {
-            return allTokens.slice(0,100);
-        } else {
-            const results = [];
-            for (let token of allTokens){
-                if (token.name.toLowerCase().includes(input)){
-                    results.push(token);
-                }
-                if (results.length === 100){
-                    break;
-                }
-            }
-
-            return results;
-        }
     }
 
     return (
         <>
         <div className="dark-background" onClick={() => isOpen(false)} />
             <div className="modal">
-                <div className="modal-header">
-                    <div>Select Coin</div>
-                    <button onClick={() => isOpen(false)}><FaTimes color="red"/></button>
-                </div>
-                <input type="text" className="search-all" name="search" value={state.search} onChange={handleChange} placeholder="Search"/>
-                <div>{state.search}</div>
-                <div className="token-list-container">
-                    <div className="all-token-list">
-                        <AddTokenList allTokens={state.tokenList}/>
-                    </div>
-                </div>
+                { state.tokenSelected !== null 
+                    ? <AddTransaction allTokens={state.allTokens} selectedToken={state.tokenSelected}/>
+                    : <AddTokenList allTokens={state.allTokens} selectToken={selectToken}/>
+                }
             </div>
         </>
     );
