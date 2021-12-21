@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { render } from "react-dom";
-import {FaChevronRight, FaTimes, IconContext} from "react-icons/fa";
+import {FaChevronRight} from "react-icons/fa";
+import ModalHeader from "./ModalHeader";
 
 const AddTokenList = ({allTokens, selectToken}) => {
     const[state, setState] = useState({
@@ -43,10 +44,7 @@ const AddTokenList = ({allTokens, selectToken}) => {
 
     return (
         <>
-            <div className="modal-header">
-                <div>Select Coin</div>
-                <button onClick={() => isOpen(false)}><FaTimes color="red"/></button>
-            </div>
+            <ModalHeader title="Select Coin"/>
             <input type="text" className="search-all" name="search" value={state.search} onChange={handleChange} placeholder="Search"/>
             <div className="token-list-container">
                 <div className="all-token-list">

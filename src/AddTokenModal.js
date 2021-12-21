@@ -1,12 +1,10 @@
 import { render } from "react-dom";
 import {useEffect, useState} from "react";
 import TokensData from "../tokens.json";
-import {FaChevronRight, FaTimes, IconContext} from "react-icons/fa";
 import AddTokenList from "./AddTokenList";
 import AddTransaction from "./AddTransaction";
 
 const AddTokenModal = ({isOpen}) => {
-    const[allTokens, setAllTokens] = useState(TokensData.data);
     const[state, setState] = useState({
         allTokens: TokensData.data,
         tokenSelected: null

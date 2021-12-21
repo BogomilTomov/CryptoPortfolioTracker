@@ -1,3 +1,4 @@
+
 * {
     box-sizing: inherit;
 }
@@ -120,4 +121,36 @@ button {
     padding: 10px;
     box-sizing: border-box;
 
+}
+
+.nav-menu {
+    width: 100%;
+    display: flex;
+    padding: 2px;
+}
+
+.nav-item {
+    padding: 4px;
+    flex-grow: 1;
+    list-style: none;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 8px;
+}
+
+.nav-item:hover {
+    background-color: lightgrey;
+}
+
+.nav-item-selected {
+    background-color: lightgrey;
+}
+
+.input-fields {
+    display: flex;
+}
+
+.input-field-container {
+    flex-grow: 1;
 }
