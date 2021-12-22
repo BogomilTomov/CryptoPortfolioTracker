@@ -1,4 +1,3 @@
-
 * {
     box-sizing: inherit;
 }
@@ -85,6 +84,7 @@ button {
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 24px;
+    box-sizing: border-box;
 }
 
 .modal-header {
@@ -120,7 +120,6 @@ button {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
-
 }
 
 .nav-menu {
@@ -153,6 +152,27 @@ button {
 
 .input-field-container {
     flex-grow: 1;
+}
+
+.select-token-container {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid black;
+    padding: 10px;
+    height: 41px;
+}
+
+.token-dropdown {
+    position: absolute;
+    width: 402px;
+    z-index: 99;
+    height: 150px;
+    box-sizing: border-box;
+    border: 1px solid black;
+}
+
+.hidden-element {
+    display: none;
 }
 
 /*# sourceMappingURL=/styles.8986bff4.css.map */

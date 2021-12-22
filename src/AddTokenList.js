@@ -12,7 +12,7 @@ const AddTokenList = ({allTokens, selectToken}) => {
     const handleChange = e => {
         setState({
             ...state,
-            search: e.target.value,
+            search: e.target.value
         })
     }
 
