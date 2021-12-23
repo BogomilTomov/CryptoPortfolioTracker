@@ -171,6 +171,15 @@ button {
     border: 1px solid black;
 }
 
+.buttons-container {
+    display: flex;
+}
+
+.total-spent {
+    padding: 14px;
+    background-color: lightgrey;
+}
+
 .hidden-element {
     display: none;
 }

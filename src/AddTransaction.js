@@ -13,6 +13,7 @@ const AddTransaction = ({allTokens, selectedToken}) => {
         option: options[0],
         quantity: 0,
         pricePerToken: 0,
+        fee: 0,
         notes: "",
         totalPrice: 0
     });
@@ -122,13 +123,14 @@ const AddTransaction = ({allTokens, selectedToken}) => {
                                 onChange={changeState}/>
                     </div>
                 </div>
-                <div>
-                    <button></button>
+                <div className="buttons-container">
+                    <button>Date</button>
                     <button>Fee</button>
                     <button>Notes</button>
                 </div>
-                <div>
-                    Total spent
+                <div className="total-spent">
+                    <div>Total spent</div>
+                    <div>${state.quantity * state.pricePerToken + state.fee}</div>
                 </div>
             </div>
             <button onClick={submit}>Add Transaction</button>
