@@ -168,7 +168,22 @@ button {
     z-index: 99;
     height: 150px;
     box-sizing: border-box;
-    border: 1px solid black;
+    background-color: white;
+    overflow: scroll;
+}
+
+.dropdown-input {
+    border: none;
+    outline: none;
+}
+
+.dropdown-token {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.dropdown-token:hover {
+    background-color: lightblue;
 }
 
 .buttons-container {

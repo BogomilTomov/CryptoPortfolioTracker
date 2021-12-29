@@ -8,7 +8,7 @@ const AddTransaction = ({allTokens, selectedToken}) => {
 
     const [state, setState] = useState({
         selectedToken: selectedToken,
-        filteredTokens: [],
+        filteredTokens: allTokens.slice(0,20),
         searchText: '',
         option: options[0],
         quantity: 0,
@@ -39,28 +39,30 @@ const AddTransaction = ({allTokens, selectedToken}) => {
     }
 
     const showTokenDropdown = (e) => {
-        const selectedTokenInput = document.getElementById('selectedToken');
-        selectedTokenInput.setAttribute('contenteditable', 'true');
-        selectedTokenInput.textContent = state.searchText;
-        selectedTokenInput.focus();
-
+        const selectedTokenContainer = document.getElementById('selectedTokenContainer');
+        const dropdownContainer = document.getElementById('dropdownContainer');
+        const dropdownInput = document.getElementById('dropdownInput');
         const tokensDropdown = document.getElementById('dropdown');
+        
+        selectedTokenContainer.classList.toggle('hidden-element');
+        dropdownContainer.classList.toggle('hidden-element');
         tokensDropdown.classList.toggle('hidden-element');
+        dropdownInput.focus();
     }
 
     const hideTokenDropdown = () => {
-        const selectedTokenInput = document.getElementById('selectedToken');
-        selectedTokenInput.setAttribute('contenteditable', 'false');
-        selectedTokenInput.textContent = state.selectedToken.name;
-        
+        const selectedTokenContainer = document.getElementById('selectedTokenContainer');
+        const dropdownContainer = document.getElementById('dropdownContainer');
         const tokensDropdown = document.getElementById('dropdown');
+
+        selectedTokenContainer.classList.toggle('hidden-element');
+        dropdownContainer.classList.toggle('hidden-element');
         tokensDropdown.classList.toggle('hidden-element');
     }
     
     const filterTokens = (e) => {
-        console.log(1)
-        state.searchText = e.target.textContent;
-        const input = e.target.textContent.toLowerCase();
+        const searchText = e.target.value;
+        const input = searchText.toLowerCase();
         const results = [];
         
         for (let token of allTokens){
@@ -74,9 +76,17 @@ const AddTransaction = ({allTokens, selectedToken}) => {
 
         setState({
             ...state,    
-            filteredTokens: results
+            filteredTokens: results,
+            searchText: searchText
         });
     }
+
+    const selectToken = (token) => {
+        setState({
+            ...state,
+            selectedToken: token
+        })
+    };
 
     const submit = () => {
         console.log(state)
@@ -94,16 +104,17 @@ const AddTransaction = ({allTokens, selectedToken}) => {
                     </li>
                 )}
             </ul>
-            <div className="select-token-container" 
-                 onClick={showTokenDropdown} 
-                 onBlur={hideTokenDropdown} 
-                >
-                <div id="selectedToken" onChange={filterTokens}>{state.selectedToken.name}</div>
+            <div id="selectedTokenContainer" className="select-token-container" onClick={showTokenDropdown}>
+                <div onChange={filterTokens}>{state.selectedToken.name}</div>
                 <FaChevronDown/>
+            </div>
+            <div id="dropdownContainer" className="select-token-container hidden-element">
+                <input id="dropdownInput" className="dropdown-input" onChange={filterTokens} onBlur={hideTokenDropdown} value={state.searchText} name="searchText"/>
+                <FaChevronUp/>
             </div>
             <div id="dropdown" className="token-dropdown hidden-element">
                 {state.filteredTokens.map(token =>
-                    <div>{token.name}</div>    
+                    <div key={token.id} className="dropdown-token" onMouseDown={() => selectToken(token)}>{token.name}</div>  
                 )}
             </div>
             <div className="input-section">
