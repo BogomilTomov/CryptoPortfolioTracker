@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { render } from "react-dom";
-import ModalHeader from "./ModalHeader";
 import {FaChevronUp, FaChevronDown} from "react-icons/fa";
-
+import Calendar from "react-calendar";
+import 'react-calendar/dist/Calendar.css';
 
 const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
     const options = ["Buy", "Sell"];
@@ -23,6 +22,8 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
         fee: null,
         oldFee: null,
         totalPrice: 0,
+        date: new Date(),
+        oldDate: new Date(),
         currentSubPage: subPages.MAIN
     });
 
@@ -54,10 +55,17 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
         });
     }
 
-    const changeSubPage = (e) => {
+    const changeState = (e) => {
         setState({
             ...state,
             [e.target.name]: e.target.value,
+        });
+    }
+
+    const changeDate = (date) => {
+        setState({
+            ...state,
+            date: date,
         });
     }
 
@@ -127,15 +135,23 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
         setState({
           ...state,
           fee: state.oldFee,
+          date: state.oldDate,
           currentSubPage: subPages.MAIN
         });
     }
 
     const addFee = (e) => {
-        console.log(state.fee)
         setState({
             ...state,
             oldFee: state.fee,
+            currentSubPage: subPages.MAIN
+        });
+    }
+
+    const saveDate = (e) => {
+        setState({
+            ...state,
+            oldDate: state.date,
             currentSubPage: subPages.MAIN
         });
     }
@@ -189,13 +205,13 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
                         <div className="buttons-container">
                             <button value={subPages.DATE}
                                     name="currentSubPage"
-                                    onClick={changeSubPage}
+                                    onClick={changeState}
                                     className="ui-control">
-                                Date
+                                {state.date.toLocaleString()}
                             </button>
                             <button value={subPages.FEE}
                                     name="currentSubPage"
-                                    onClick={changeSubPage}
+                                    onClick={changeState}
                                     className="ui-control">
                                 $ {(state.fee == null || state.fee == '' ? 'Fee' : state.fee)}
                             </button>
@@ -209,7 +225,15 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
                 </>     
 
             }
-            {/* { state.currentSubPage == subPages.DATE && <AddTransactionDate />} */}
+            { state.currentSubPage == subPages.DATE && 
+                <>
+                    <Calendar value={state.date} name="date" onChange={changeDate}/>
+                    <div>
+                        <button className="ui-control" onClick={goBackToAddTransaction}>Back</button>
+                        <button className="ui-control" onClick={saveDate}>Change Date</button>
+                    </div>
+                </>
+            }
             { state.currentSubPage == subPages.FEE && 
                 <>
                     <input  type="number"
@@ -221,11 +245,6 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
                         <button className="ui-control" onClick={goBackToAddTransaction}>Back</button>
                         <button className="ui-control" onClick={addFee}>Add Fee</button>
                     </div>
-                </>
-            }
-            { state.currentSubPage == subPages.DATE && 
-                <>
-                    
                 </>
             }
         </>
