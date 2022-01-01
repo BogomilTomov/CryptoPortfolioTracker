@@ -3,13 +3,23 @@ import {useEffect, useState} from "react";
 import TokensData from "../tokens.json";
 import AddTokenList from "./AddTokenList";
 import AddTransaction from "./AddTransaction";
+import {FaTimes} from "react-icons/fa";
+
 
 const AddTokenModal = ({isOpen}) => {
     const[state, setState] = useState({
         allTokens: TokensData.data,
-        tokenSelected: null
+        tokenSelected: null,
+        modalHeader: "Select Token"
     });
     
+    const setModalHeader = (title) => {
+        setState({
+            ...state,
+            modalHeader: title
+        });
+    }
+
     useEffect(() => {
         // fetch("https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?id=1", {
             //     "method": "GET",
@@ -35,8 +45,12 @@ const AddTokenModal = ({isOpen}) => {
         <>
         <div className="dark-background" onClick={() => isOpen(false)} />
             <div className="modal">
+                <div className="modal-header">
+                    <div>{state.modalHeader}</div>
+                    <button onClick={() => isOpen(false)}><FaTimes color="red"/></button>
+                </div>
                 { state.tokenSelected !== null 
-                    ? <AddTransaction allTokens={state.allTokens} selectedToken={state.tokenSelected}/>
+                    ? <AddTransaction allTokens={state.allTokens} selectedToken={state.tokenSelected} setModalHeader={setModalHeader}/>
                     : <AddTokenList allTokens={state.allTokens} selectToken={selectToken}/>
                 }
             </div>

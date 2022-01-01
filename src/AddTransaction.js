@@ -4,13 +4,13 @@ import ModalHeader from "./ModalHeader";
 import {FaChevronUp, FaChevronDown} from "react-icons/fa";
 
 
-const AddTransaction = ({allTokens, selectedToken}) => {
+const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
     const options = ["Buy", "Sell"];
 
     const subPages = {
-        MAIN: "main",
-        DATE: "date",
-        FEE: "fee"
+        MAIN: "Add Transaction",
+        DATE: "Date",
+        FEE: "Fee"
     }
     
     const [state, setState] = useState({
@@ -25,6 +25,10 @@ const AddTransaction = ({allTokens, selectedToken}) => {
         totalPrice: 0,
         currentSubPage: subPages.MAIN
     });
+
+    useEffect(() => {
+        setModalHeader(state.currentSubPage);
+    }, [state.currentSubPage]);
 
     useEffect (() => {
         tryRecalculateTotal();
@@ -143,7 +147,6 @@ const AddTransaction = ({allTokens, selectedToken}) => {
         <>
             { state.currentSubPage == subPages.MAIN &&        
                 <>     
-                    <ModalHeader title="Add Transaction" hasCloseButton={true}/>
                     <ul className="nav-menu">
                         {options.map(option => 
                             <li key={option}
@@ -209,23 +212,20 @@ const AddTransaction = ({allTokens, selectedToken}) => {
             {/* { state.currentSubPage == subPages.DATE && <AddTransactionDate />} */}
             { state.currentSubPage == subPages.FEE && 
                 <>
-                    <button onClick={goBackToAddTransaction}>Back</button>
                     <input  type="number"
                             value={state.fee}
                             name="fee"
                             onChange={changeNumericInput}
                             />
-                    <button onClick={addFee}>Add Fee</button>
+                    <div>
+                        <button className="ui-control" onClick={goBackToAddTransaction}>Back</button>
+                        <button className="ui-control" onClick={addFee}>Add Fee</button>
+                    </div>
                 </>
             }
             { state.currentSubPage == subPages.DATE && 
                 <>
-                    <button onClick={goBackToAddTransaction}>Back</button>
-                    <input  type="number"
-                            value={setInitialFeeValue}
-                            id="fee"
-                            />
-                    <button onClick={addFee}>Add Fee</button>
+                    
                 </>
             }
         </>
