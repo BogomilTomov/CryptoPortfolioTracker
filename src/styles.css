@@ -31,13 +31,14 @@ button {
 
 .ui-control {
     border-radius: 5px;
+    padding: 6px;
+
 }
 
 .add-new-button {
     background-color: blue;
     color: white;
     border: none;
-    padding: 6px;
 }
 
 .tokens-table {
@@ -102,10 +103,6 @@ button {
 
 .all-token-list {
     width: 100%;
-}
-
-.a {
-    margin-bottom: -20px;
 }
 
 .search-all {

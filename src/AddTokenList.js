@@ -44,7 +44,7 @@ const AddTokenList = ({allTokens, selectToken}) => {
 
     return (
         <>
-            <ModalHeader title="Select Coin"/>
+            <ModalHeader title="Select Coin" hasCloseButton={true}/>
             <input type="text" className="search-all" name="search" value={state.search} onChange={handleChange} placeholder="Search"/>
             <div className="token-list-container">
                 <div className="all-token-list">

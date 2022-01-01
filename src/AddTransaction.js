@@ -15,12 +15,13 @@ const AddTransaction = ({allTokens, selectedToken}) => {
     
     const [state, setState] = useState({
         selectedToken: selectedToken,
-        filteredTokens: allTokens.slice(0,20),
+        filteredTokens: allTokens.slice(0, 20),
         searchText: '',
         option: options[0],
-        quantity: 0,
-        pricePerToken: 0,
-        fee: 0,
+        quantity: null,
+        pricePerToken: null,
+        fee: null,
+        oldFee: null,
         totalPrice: 0,
         currentSubPage: subPages.MAIN
     });
@@ -43,6 +44,13 @@ const AddTransaction = ({allTokens, selectedToken}) => {
     };
 
     const changeNumericInput = (e) => {
+        setState({
+            ...state,
+            [e.target.name]: e.target.value,
+        });
+    }
+
+    const changeSubPage = (e) => {
         setState({
             ...state,
             [e.target.name]: e.target.value,
@@ -114,19 +122,28 @@ const AddTransaction = ({allTokens, selectedToken}) => {
     const goBackToAddTransaction = () => {
         setState({
           ...state,
+          fee: state.oldFee,
           currentSubPage: subPages.MAIN
         });
-      }
+    }
+
+    const addFee = (e) => {
+        console.log(state.fee)
+        setState({
+            ...state,
+            oldFee: state.fee,
+            currentSubPage: subPages.MAIN
+        });
+    }
 
     const submit = () => {
-        console.log(state)
     }
 
     return (
         <>
             { state.currentSubPage == subPages.MAIN &&        
                 <>     
-                    {/* <ModalHeader title="Add Transaction"/> */}
+                    <ModalHeader title="Add Transaction" hasCloseButton={true}/>
                     <ul className="nav-menu">
                         {options.map(option => 
                             <li key={option}
@@ -169,10 +186,16 @@ const AddTransaction = ({allTokens, selectedToken}) => {
                         <div className="buttons-container">
                             <button value={subPages.DATE}
                                     name="currentSubPage"
-                                    onClick={changeNumericInput}>Date</button>
+                                    onClick={changeSubPage}
+                                    className="ui-control">
+                                Date
+                            </button>
                             <button value={subPages.FEE}
                                     name="currentSubPage"
-                                    onClick={changeNumericInput}>Fee</button>
+                                    onClick={changeSubPage}
+                                    className="ui-control">
+                                $ {(state.fee == null || state.fee == '' ? 'Fee' : state.fee)}
+                            </button>
                         </div>
                         <div className="total-spent">
                             <div>Total spent</div>
@@ -187,10 +210,22 @@ const AddTransaction = ({allTokens, selectedToken}) => {
             { state.currentSubPage == subPages.FEE && 
                 <>
                     <button onClick={goBackToAddTransaction}>Back</button>
-                    <input type="number"
+                    <input  type="number"
+                            value={state.fee}
                             name="fee"
-                            value={state.fee}/>
-                    <button>Add Fee</button>
+                            onChange={changeNumericInput}
+                            />
+                    <button onClick={addFee}>Add Fee</button>
+                </>
+            }
+            { state.currentSubPage == subPages.DATE && 
+                <>
+                    <button onClick={goBackToAddTransaction}>Back</button>
+                    <input  type="number"
+                            value={setInitialFeeValue}
+                            id="fee"
+                            />
+                    <button onClick={addFee}>Add Fee</button>
                 </>
             }
         </>

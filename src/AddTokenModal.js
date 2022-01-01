@@ -11,7 +11,6 @@ const AddTokenModal = ({isOpen}) => {
     });
     
     useEffect(() => {
-        console.log(1)
         // fetch("https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?id=1", {
             //     "method": "GET",
         //     "headers": {

@@ -1,12 +1,12 @@
 import { render } from "react-dom";
 import {FaTimes} from "react-icons/fa";
 
-const ModalHeader = ({title}) => {
+const ModalHeader = ({title, hasCloseButton}) => {
     return (
         <>
             <div className="modal-header">
                 <div>{title}</div>
-                <button onClick={() => isOpen(false)}><FaTimes color="red"/></button>
+                {hasCloseButton && <button onClick={() => isOpen(false)}><FaTimes color="red"/></button>}
             </div>
         </>
     )
