@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import {FaChevronUp, FaChevronDown} from "react-icons/fa";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
+import { IconBase } from "react-icons/lib";
 
 const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
     const options = ["Buy", "Sell"];
@@ -49,9 +50,11 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
     };
 
     const changeNumericInput = (e) => {
+        var numericInput = isNaN(e.target.value) ? null : e.target.value;
+
         setState({
             ...state,
-            [e.target.name]: e.target.value,
+            [e.target.name]: numericInput,
         });
     }
 
@@ -157,6 +160,29 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
     }
 
     const submit = () => {
+        validateInput();
+    }
+
+    const validateInput = () => {
+        const inputsToCheck = [
+            {property: "quantity", displayName: "Quantity"}, 
+            {property: "pricePerToken", displayName: "Price"}
+        ];
+        let isValid = true;
+        
+        inputsToCheck.forEach(input => {
+            if (state[input.property] == null || state[input.property] == 0) {
+                const errorElement = document.getElementById(`${input.property}Error`);
+                const errorMessage = state[input.property] == 0 
+                    ? `${input.displayName} must be greater than 0` 
+                    : `${input.displayName} is not valid`;
+                errorElement.classList.remove('hidden-element');
+                errorElement.textContent = errorMessage;
+                isValid = false;
+            }
+        })
+        
+        return isValid;
     }
 
     return (
@@ -193,6 +219,7 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
                                         value={state.quantity} 
                                         name="quantity" 
                                         onChange={changeNumericInput}/>
+                                <div id="quantityError" className="hidden-element">Error</div>
                             </div>
                             <div className="input-field-container">
                                 <p>Price per Token</p>
@@ -200,6 +227,7 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
                                         value={state.pricePerToken} 
                                         name="pricePerToken" 
                                         onChange={changeNumericInput}/>
+                                <div id="pricePerTokenError" className="hidden-element">Error</div>
                             </div>
                         </div>
                         <div className="buttons-container">
