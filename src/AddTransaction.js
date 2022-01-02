@@ -4,7 +4,7 @@ import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import PortfolioData from "../configData.json";
 
-const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen}) => {
+const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTokenToPortfolio}) => {
     const options = ["Buy", "Sell"];
 
     const subPages = {
@@ -179,22 +179,13 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen}) => {
                 fee: Number(state.fee),
                 total: Number(state.totalPrice),
                 date: state.date,
-                tokenId: state.selectedToken.id
+                id: state.selectedToken.id,
+                name: state.selectedToken.name
             }
 
-            saveToLocalStorage(newTransaction)
+            addTokenToPortfolio(newTransaction)
             isOpen(false);
         }
-    }
-
-    const saveToLocalStorage = (newTransaction) => {
-        const localStorageVariable = PortfolioData.LOCAL_STORAGE_VARIABLE_NAME;
-        const portfolioData = JSON.parse(localStorage.getItem("portfolioData"));
-        if (portfolioData.tokens == undefined){
-            portfolioData.tokens = [];
-        }
-        portfolioData.tokens.push(newTransaction);
-        localStorage.setItem(localStorageVariable, JSON.stringify(portfolioData));
     }
 
     const validateInput = () => {

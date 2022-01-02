@@ -5,13 +5,25 @@ import AddTokenModal from "./AddTokenModal";
 import PortfolioData from "../configData.json";
 
 const MainPage = () => {
-    const [portfolioData, setPortfolioData] = useState({});
+    const [portfolioData, setPortfolioData] = useState({tokens: []});
     const [modalIsOpen, setModalIsOpen] = useState(true);
-    
+
     useEffect(() => {
         const localStorageVariable = PortfolioData.LOCAL_STORAGE_VARIABLE_NAME;
-        setPortfolioData(JSON.parse(localStorage.getItem("portfolioData")));
-    }, []);
+
+        if (localStorage.getItem(localStorageVariable) != null && portfolioData.tokens.length == 0) {
+            setPortfolioData(JSON.parse(localStorage.getItem(localStorageVariable)));
+        } else {
+            localStorage.setItem(localStorageVariable, JSON.stringify(portfolioData));
+        }
+    }, [portfolioData]);
+
+    const addTokenToPortfolio = (newToken) => {
+        setPortfolioData({
+            ...portfolioData,
+            tokens: [...portfolioData.tokens, newToken]
+        });
+    }
 
     return (
         <div className="app-container">
@@ -47,7 +59,7 @@ const MainPage = () => {
                     </tbody>
                 </table>
             </div>
-            {modalIsOpen && <AddTokenModal isOpen={setModalIsOpen} />}
+            {modalIsOpen && <AddTokenModal isOpen={setModalIsOpen} addTokenToPortfolio={addTokenToPortfolio}/>}
         </div>
     )
 
