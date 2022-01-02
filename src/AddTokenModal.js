@@ -22,7 +22,7 @@ const AddTokenModal = ({isOpen}) => {
 
     useEffect(() => {
         // fetch("https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?id=1", {
-            //     "method": "GET",
+        //     "method": "GET",
         //     "headers": {
         //         "X-CMC_PRO_API_KEY": "ede53949-3fbc-4b50-af2d-353e5dee260a",
         //         "Access-Control-Allow-Origin": "http://localhost:1234",
@@ -50,7 +50,7 @@ const AddTokenModal = ({isOpen}) => {
                     <button onClick={() => isOpen(false)}><FaTimes color="red"/></button>
                 </div>
                 { state.tokenSelected !== null 
-                    ? <AddTransaction allTokens={state.allTokens} selectedToken={state.tokenSelected} setModalHeader={setModalHeader}/>
+                    ? <AddTransaction allTokens={state.allTokens} selectedToken={state.tokenSelected} setModalHeader={setModalHeader} isOpen={isOpen}/>
                     : <AddTokenList allTokens={state.allTokens} selectToken={selectToken}/>
                 }
             </div>

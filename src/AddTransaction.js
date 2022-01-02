@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import {FaChevronUp, FaChevronDown} from "react-icons/fa";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
-import { IconBase } from "react-icons/lib";
+import PortfolioData from "../configData.json";
 
-const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
+const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen}) => {
     const options = ["Buy", "Sell"];
 
     const subPages = {
@@ -56,6 +56,16 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
             ...state,
             [e.target.name]: numericInput,
         });
+
+        clearErrorMessage(e.target.id);
+    }
+
+    const clearErrorMessage = (property) => {
+        const errorElement = document.getElementById(`${property}Error`);
+
+        if (errorElement) {
+            errorElement.classList.add('hidden-element');
+        }
     }
 
     const changeState = (e) => {
@@ -160,7 +170,31 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
     }
 
     const submit = () => {
-        validateInput();
+        const inputsAreValid = validateInput();
+        if (inputsAreValid) {
+            const newTransaction = {
+                type: state.option,
+                quantity: Number(state.quantity),
+                pricePerToken: Number(state.pricePerToken),
+                fee: Number(state.fee),
+                total: Number(state.totalPrice),
+                date: state.date,
+                tokenId: state.selectedToken.id
+            }
+
+            saveToLocalStorage(newTransaction)
+            isOpen(false);
+        }
+    }
+
+    const saveToLocalStorage = (newTransaction) => {
+        const localStorageVariable = PortfolioData.LOCAL_STORAGE_VARIABLE_NAME;
+        const portfolioData = JSON.parse(localStorage.getItem("portfolioData"));
+        if (portfolioData.tokens == undefined){
+            portfolioData.tokens = [];
+        }
+        portfolioData.tokens.push(newTransaction);
+        localStorage.setItem(localStorageVariable, JSON.stringify(portfolioData));
     }
 
     const validateInput = () => {
@@ -174,7 +208,7 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
             if (state[input.property] == null || state[input.property] == 0) {
                 const errorElement = document.getElementById(`${input.property}Error`);
                 const errorMessage = state[input.property] == 0 
-                    ? `${input.displayName} must be greater than 0` 
+                    ? `${input.displayName} must be > 0` 
                     : `${input.displayName} is not valid`;
                 errorElement.classList.remove('hidden-element');
                 errorElement.textContent = errorMessage;
@@ -215,7 +249,8 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
                         <div className="input-fields">
                             <div className="input-field-container">
                                 <p>Quantity</p>
-                                <input  type="number" 
+                                <input  id="quantity"
+                                        type="number" 
                                         value={state.quantity} 
                                         name="quantity" 
                                         onChange={changeNumericInput}/>
@@ -223,7 +258,8 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader}) => {
                             </div>
                             <div className="input-field-container">
                                 <p>Price per Token</p>
-                                <input  type="number" 
+                                <input  id="pricePerToken"
+                                        type="number" 
                                         value={state.pricePerToken} 
                                         name="pricePerToken" 
                                         onChange={changeNumericInput}/>
