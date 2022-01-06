@@ -122,6 +122,7 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTo
         const results = [];
         
         for (let token of allTokens){
+            console.log(token.name, selectToken.name)
             if (token.name.toLowerCase().includes(input)){
                 results.push(token);
             }
@@ -224,7 +225,10 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTo
                         )}
                     </ul>
                     <div id="selectedTokenContainer" className="select-token-container" onClick={showTokenDropdown}>
-                        <div onChange={filterTokens}>{state.selectedToken.name}</div>
+                        <div>
+                            <img className="token-logo" src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${state.selectedToken.id}.png`}></img> 
+                            <span onChange={filterTokens}>{state.selectedToken.name}</span>
+                        </div>
                         <FaChevronDown/>
                     </div>
                     <div id="dropdownContainer" className="select-token-container hidden-element">
@@ -233,7 +237,10 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTo
                     </div>
                     <div id="dropdown" className="token-dropdown hidden-element">
                         {state.filteredTokens.map(token =>
-                            <div key={token.id} className="dropdown-token" onMouseDown={() => selectToken(token)}>{token.name}</div>  
+                            <>
+                                <img className="token-logo" src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${token.id}.png`}></img> 
+                                <div key={token.id} className="dropdown-token" onMouseDown={() => selectToken(token)}>{token.name}</div>  
+                            </>
                         )}
                     </div>
                     <div className="input-section">

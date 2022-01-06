@@ -5,7 +5,7 @@ import ModalHeader from "./ModalHeader";
 
 const AddTokenList = ({allTokens, selectToken}) => {
     const[state, setState] = useState({
-        displayedTokens: allTokens.slice(0,100),
+        displayedTokens: [],
         search: ''
     });
 
@@ -21,7 +21,7 @@ const AddTokenList = ({allTokens, selectToken}) => {
             ...state,
             displayedTokens: filterTokens(state.search)
         })
-    }, [state.search])
+    }, [state.search, allTokens]);
     
     const filterTokens = input => {
         input = input.toLowerCase();
@@ -50,7 +50,10 @@ const AddTokenList = ({allTokens, selectToken}) => {
                     {state.displayedTokens.map(token =>
                         <button key={token.id} className="token-row" onClick={() => selectToken(token)}>
                             <div>
-                                {token.name} {token.symbol}
+                                <img className="token-logo" src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${token.id}.png`}></img> 
+                                <span>
+                                    {token.name} {token.symbol}
+                                </span>
                             </div>
                             <FaChevronRight/>
                         </button>

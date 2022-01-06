@@ -12,7 +12,7 @@ const AddTokenModal = ({isOpen, addTokenToPortfolio}) => {
         tokenSelected: null,
         modalHeader: "Select Token"
     });
-    
+
     const setModalHeader = (title) => {
         setState({
             ...state,
@@ -21,7 +21,7 @@ const AddTokenModal = ({isOpen, addTokenToPortfolio}) => {
     }
 
     useEffect(() => {
-        // fetch("https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?id=1", {
+        // fetch("https://pro-api.coinmarketcap.com/v1/cryptocurrency/map", {
         //     "method": "GET",
         //     "headers": {
         //         "X-CMC_PRO_API_KEY": "ede53949-3fbc-4b50-af2d-353e5dee260a",
@@ -30,9 +30,9 @@ const AddTokenModal = ({isOpen, addTokenToPortfolio}) => {
         //         "Access-Control-Allow-Credentials": "true"
         //     },
         // })
-        // .then(setAllTokens);
-        //setAllTokens(TokensData.data);
-    });
+        // .then(resp => resp.json())
+        // .then(data => setState({...state, allTokens: data.data}));
+    }, []);
 
     const selectToken = (token) => {
         setState({
