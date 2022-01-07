@@ -9,19 +9,75 @@ const MainPage = () => {
     const [modalIsOpen, setModalIsOpen] = useState(true);
 
     useEffect(() => {
+        checkLocalStorage();
+    }, []);
+    
+    const checkLocalStorage = () => {
         const localStorageVariable = PortfolioData.LOCAL_STORAGE_VARIABLE_NAME;
-
-        if (localStorage.getItem(localStorageVariable) != null && portfolioData.tokens.length == 0) {
+        
+        if (localStorage.getItem(localStorageVariable) != null) {
             setPortfolioData(JSON.parse(localStorage.getItem(localStorageVariable)));
         } else {
-            localStorage.setItem(localStorageVariable, JSON.stringify(portfolioData));
+            localStorage.setItem(localStorageVariable, JSON.stringify([]));
         }
-    }, [portfolioData]);
+    }
+    
+    const getUpdatedTokenPrice = () => {
+        if (portfolioData.tokens.length) {
+            //const tokenIds = portfolioData.tokens.map(t => t.id).join(',');
 
-    const addTokenToPortfolio = (newToken) => {
+            fetch(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest`, {
+                "method": "GET",
+                "headers": {
+                        "X-CMC_PRO_API_KEY": "ede53949-3fbc-4b50-af2d-353e5dee260a",
+                        "Access-Control-Allow-Origin": "http://localhost:1234",
+                        "Access-Control-Allow-Headers": "privatekey",
+                        "Access-Control-Allow-Credentials": "true"
+                    },
+                })
+                .then(resp => resp.json())
+                .then(data => updateTokenPricesLocally(data.data));
+                }
+            }
+
+    const updateTokenPricesLocally = (tokensData) => {
+        portfolioData.tokens.forEach(token => {
+            var correspondingData = tokensData.find(t => t.id == token.id);
+            if (correspondingData != undefined) {
+                token.currentPrice = correspondingData.quote.USD.price;
+            }
+        });
+        
         setPortfolioData({
             ...portfolioData,
-            tokens: [...portfolioData.tokens, newToken]
+            tokens: portfolioData.tokens
+        })
+    }
+            
+    useEffect(() => {
+        const localStorageVariable = PortfolioData.LOCAL_STORAGE_VARIABLE_NAME;
+        localStorage.setItem(localStorageVariable, JSON.stringify(portfolioData));
+        getUpdatedTokenPrice();
+    }, [portfolioData]);
+
+    const addTransactionToPortfolio = (tokenId, tokenName, newTransaction) => {
+        var token = portfolioData.tokens.find(t => t.id === tokenId);
+        if (token == undefined) {
+            token = {
+                id: tokenId,
+                name: tokenName,
+                currentPrice: 0,
+                transactions: []
+            };
+
+            portfolioData.tokens.push(token);
+        }
+
+        token.transactions.push(newTransaction);
+
+        setPortfolioData({
+            ...portfolioData,
+            tokens: portfolioData.tokens
         });
     }
 
@@ -59,7 +115,7 @@ const MainPage = () => {
                     </tbody>
                 </table>
             </div>
-            {modalIsOpen && <AddTokenModal isOpen={setModalIsOpen} addTokenToPortfolio={addTokenToPortfolio}/>}
+            {modalIsOpen && <AddTokenModal isOpen={setModalIsOpen} addTransactionToPortfolio={addTransactionToPortfolio}/>}
         </div>
     )
 

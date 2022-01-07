@@ -6,7 +6,7 @@ import AddTransaction from "./AddTransaction";
 import {FaTimes} from "react-icons/fa";
 
 
-const AddTokenModal = ({isOpen, addTokenToPortfolio}) => {
+const AddTokenModal = ({isOpen, addTransactionToPortfolio}) => {
     const[state, setState] = useState({
         allTokens: TokensData.data,
         tokenSelected: null,
@@ -50,7 +50,7 @@ const AddTokenModal = ({isOpen, addTokenToPortfolio}) => {
                     <button onClick={() => isOpen(false)}><FaTimes color="red"/></button>
                 </div>
                 { state.tokenSelected !== null 
-                    ? <AddTransaction allTokens={state.allTokens} selectedToken={state.tokenSelected} setModalHeader={setModalHeader} isOpen={isOpen} addTokenToPortfolio={addTokenToPortfolio}/>
+                    ? <AddTransaction allTokens={state.allTokens} selectedToken={state.tokenSelected} setModalHeader={setModalHeader} isOpen={isOpen} addTransactionToPortfolio={addTransactionToPortfolio}/>
                     : <AddTokenList allTokens={state.allTokens} selectToken={selectToken}/>
                 }
             </div>

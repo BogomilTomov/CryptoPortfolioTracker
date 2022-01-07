@@ -4,7 +4,7 @@ import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import PortfolioData from "../configData.json";
 
-const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTokenToPortfolio}) => {
+const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTransactionToPortfolio}) => {
     const options = ["Buy", "Sell"];
 
     const subPages = {
@@ -173,18 +173,19 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTo
     const submit = () => {
         const inputsAreValid = validateInput();
         if (inputsAreValid) {
+            const id = state.selectedToken.id;
+            const name = state.selectedToken.name
+
             const newTransaction = {
                 type: state.option,
                 quantity: Number(state.quantity),
                 pricePerToken: Number(state.pricePerToken),
                 fee: Number(state.fee),
                 total: Number(state.totalPrice),
-                date: state.date,
-                id: state.selectedToken.id,
-                name: state.selectedToken.name
+                date: state.date
             }
 
-            addTokenToPortfolio(newTransaction)
+            addTransactionToPortfolio(id, name, newTransaction)
             isOpen(false);
         }
     }
@@ -239,7 +240,7 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTo
                         {state.filteredTokens.map(token =>
                             <>
                                 <img className="token-logo" src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${token.id}.png`}></img> 
-                                <div key={token.id} className="dropdown-token" onMouseDown={() => selectToken(token)}>{token.name}</div>  
+                                <span key={token.id} className="dropdown-token" onMouseDown={() => selectToken(token)}>{token.name}</span>  
                             </>
                         )}
                     </div>
