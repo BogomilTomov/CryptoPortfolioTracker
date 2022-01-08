@@ -9,6 +9,7 @@ body {
 
 button {
     all: unset;
+    cursor: pointer;
 }
 
 .app-container {

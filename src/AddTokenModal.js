@@ -6,10 +6,10 @@ import AddTransaction from "./AddTransaction";
 import {FaTimes} from "react-icons/fa";
 
 
-const AddTokenModal = ({isOpen, addTransactionToPortfolio}) => {
+const AddTokenModal = ({isOpen, addTransactionToPortfolio, tokenSelected}) => {
     const[state, setState] = useState({
         allTokens: TokensData.data,
-        tokenSelected: null,
+        tokenSelected: tokenSelected || null,
         modalHeader: "Select Token"
     });
 

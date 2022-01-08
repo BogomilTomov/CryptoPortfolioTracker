@@ -1,15 +1,16 @@
-import { render } from "react-dom";
 import {useEffect, useState} from "react";
-import Card from "./Card";
 import AddTokenModal from "./AddTokenModal";
 import PortfolioData from "../configData.json";
+import {FaPlus, FaEllipsisV, FaTrash} from "react-icons/fa";
 
 const MainPage = () => {
-    const [portfolioData, setPortfolioData] = useState({tokens: []});
-    const [modalIsOpen, setModalIsOpen] = useState(true);
+    const [portfolioData, setPortfolioData] = useState({tokens: [], totalBalance: 0});
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [tokenSelected, setTokenSelected] = useState(null);
 
     useEffect(() => {
         checkLocalStorage();
+        getUpdatedTokenPrice();
     }, []);
     
     const checkLocalStorage = () => {
@@ -37,8 +38,8 @@ const MainPage = () => {
                 })
                 .then(resp => resp.json())
                 .then(data => updateTokenPricesLocally(data.data));
-                }
-            }
+        }
+    }
 
     const updateTokenPricesLocally = (tokensData) => {
         portfolioData.tokens.forEach(token => {
@@ -57,7 +58,6 @@ const MainPage = () => {
     useEffect(() => {
         const localStorageVariable = PortfolioData.LOCAL_STORAGE_VARIABLE_NAME;
         localStorage.setItem(localStorageVariable, JSON.stringify(portfolioData));
-        getUpdatedTokenPrice();
     }, [portfolioData]);
 
     const addTransactionToPortfolio = (tokenId, tokenName, newTransaction) => {
@@ -67,28 +67,58 @@ const MainPage = () => {
                 id: tokenId,
                 name: tokenName,
                 currentPrice: 0,
-                transactions: []
+                transactions: [],
+                amount: 0,
+                profit: 0,
+                avgBuyPrice: 0
             };
 
             portfolioData.tokens.push(token);
         }
-
+        
         token.transactions.push(newTransaction);
+        recalculateTokenStats(token, newTransaction);
+        getUpdatedTokenPrice();
 
         setPortfolioData({
             ...portfolioData,
             tokens: portfolioData.tokens
         });
-    }
+    };
+
+    const recalculateTokenStats = (token, newTransaction) => {
+        token.amount += newTransaction.quantity;
+        token.profit += newTransaction.quantity * (newTransaction.currentPrice - newTransaction.pricePerToken);
+        recalculateTotalBalance();
+    };
+
+    const recalculateTotalBalance = () => {
+        portfolioData.totalBalance = 0;
+        portfolioData.tokens.forEach(token => {
+            token.transactions.forEach(tran => {
+            portfolioData.totalBalance += tran.quantity * tran.pricePerToken;
+            });
+        });
+    };
+
+    const removeToken = (token) => {
+        portfolioData.tokens = portfolioData.tokens.filter(t => t.id != token.id);
+        recalculateTotalBalance();
+
+        setPortfolioData({
+            ...portfolioData,
+            tokens: portfolioData.tokens
+        });
+    };
 
     return (
         <div className="app-container">
             <div className="top-section">
                 <div className="current-balance">
                     <div className="current-balance-label">Current Balance</div>
-                    <div className="current-balance-amount">1000</div>
+                    <div className="current-balance-amount">{portfolioData.totalBalance}</div>
                 </div>
-                <button className="ui-control add-new-button" onClick={() => setModalIsOpen(true)}>
+                <button className="ui-control add-new-button" onClick={() => {setTokenSelected(null); setModalIsOpen(true)}}>
                     Add New
                 </button>
             </div>
@@ -99,7 +129,6 @@ const MainPage = () => {
                         <tr>
                             <th>Name</th>
                             <th>Price</th>
-                            <th>24H</th>
                             <th>Amount</th>
                             <th>Profit</th>
                             <th>Actions</th>
@@ -107,18 +136,23 @@ const MainPage = () => {
                     </thead>
                     <tbody>
                         {portfolioData.tokens && portfolioData.tokens.map(token =>
-                            <tr key={token.name}>
+                            <tr key={token.id}>
                                 <td>{token.name}</td>
+                                <td>{token.currentPrice}</td>
                                 <td>{token.amount}</td>
+                                <td>{token.profit}</td>
+                                <td>
+                                    <button onClick={() => {setTokenSelected(token); setModalIsOpen(true)}}><FaPlus/></button>
+                                    <button onClick={() => removeToken(token)}><FaTrash/></button>
+                                </td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </div>
-            {modalIsOpen && <AddTokenModal isOpen={setModalIsOpen} addTransactionToPortfolio={addTransactionToPortfolio}/>}
+            {modalIsOpen && <AddTokenModal isOpen={setModalIsOpen} addTransactionToPortfolio={addTransactionToPortfolio} tokenSelected={tokenSelected}/>}
         </div>
     )
-
 };
 
 export default MainPage;

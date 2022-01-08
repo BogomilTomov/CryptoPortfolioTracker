@@ -174,10 +174,13 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTr
         const inputsAreValid = validateInput();
         if (inputsAreValid) {
             const id = state.selectedToken.id;
-            const name = state.selectedToken.name
+            const name = state.selectedToken.name;
+
+            if (state.option == "Sell") {
+                state.quantity = -state.quantity;
+            }
 
             const newTransaction = {
-                type: state.option,
                 quantity: Number(state.quantity),
                 pricePerToken: Number(state.pricePerToken),
                 fee: Number(state.fee),
