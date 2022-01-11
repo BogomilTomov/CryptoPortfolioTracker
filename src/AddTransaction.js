@@ -19,6 +19,7 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTr
         searchText: '',
         option: options[0],
         quantity: null,
+        currentPrice: null,
         pricePerToken: null,
         fee: null,
         oldFee: null,
@@ -27,6 +28,32 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTr
         oldDate: new Date(),
         currentSubPage: subPages.MAIN
     });
+
+    useEffect(() => {
+        if (state.selectedToken != null) {
+            fetch(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=${state.selectedToken.id}`, {
+                "method": "GET",
+                "headers": {
+                        "X-CMC_PRO_API_KEY": "ede53949-3fbc-4b50-af2d-353e5dee260a",
+                        "Access-Control-Allow-Origin": "http://localhost:1234",
+                        "Access-Control-Allow-Headers": "privatekey",
+                        "Access-Control-Allow-Credentials": "true"
+                    }
+                })
+            .then(resp => resp.json())
+            .then(data => { 
+                const token = data.data[state.selectedToken.id];
+                if (token != undefined) {
+                    setState({
+                        ...state,
+                        pricePerToken: token.quote.USD.price,
+                        currentPrice: token.quote.USD.price
+                    });
+                }
+            });
+        }
+
+    }, [state.selectedToken]);
 
     useEffect(() => {
         setModalHeader(state.currentSubPage);
@@ -122,7 +149,6 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTr
         const results = [];
         
         for (let token of allTokens){
-            console.log(token.name, selectToken.name)
             if (token.name.toLowerCase().includes(input)){
                 results.push(token);
             }
@@ -182,6 +208,7 @@ const AddTransaction = ({allTokens, selectedToken, setModalHeader, isOpen, addTr
 
             const newTransaction = {
                 quantity: Number(state.quantity),
+                currentPrice: Number(state.currentPrice),
                 pricePerToken: Number(state.pricePerToken),
                 fee: Number(state.fee),
                 total: Number(state.totalPrice),

@@ -26,14 +26,14 @@ const AddTokenList = ({allTokens, selectToken}) => {
     const filterTokens = input => {
         input = input.toLowerCase();
         if (input.trim().length === 0) {
-            return allTokens.slice(0,100);
+            return allTokens.slice(0, 50);
         } else {
             const results = [];
             for (let token of allTokens){
-                if (token.name.toLowerCase().includes(input)){
+                if (token.name.toLowerCase().includes(input) || token.symbol.toLowerCase().includes(input)){
                     results.push(token);
                 }
-                if (results.length === 100){
+                if (results.length === 50){
                     break;
                 }
             }
@@ -44,7 +44,7 @@ const AddTokenList = ({allTokens, selectToken}) => {
 
     return (
         <>
-            <input type="text" className="search-all" name="search" value={state.search} onChange={handleChange} placeholder="Search"/>
+            <input type="text" autoFocus className="search-all" name="search" value={state.search} onChange={handleChange} placeholder="Search"/>
             <div className="token-list-container">
                 <div className="all-token-list">
                     {state.displayedTokens.map(token =>

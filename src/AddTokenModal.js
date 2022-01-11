@@ -1,10 +1,8 @@
-import { render } from "react-dom";
 import {useEffect, useState} from "react";
 import TokensData from "../tokens.json";
 import AddTokenList from "./AddTokenList";
 import AddTransaction from "./AddTransaction";
 import {FaTimes} from "react-icons/fa";
-
 
 const AddTokenModal = ({isOpen, addTransactionToPortfolio, tokenSelected}) => {
     const[state, setState] = useState({

@@ -1,7 +1,9 @@
 import {useEffect, useState} from "react";
 import AddTokenModal from "./AddTokenModal";
 import PortfolioData from "../configData.json";
-import {FaPlus, FaEllipsisV, FaTrash} from "react-icons/fa";
+import {FaPlus, FaTrash} from "react-icons/fa";
+import {GrTransaction} from "react-icons/gr";
+import {formatNumber} from "./Utils";
 
 const MainPage = () => {
     const [portfolioData, setPortfolioData] = useState({tokens: [], totalBalance: 0});
@@ -10,8 +12,11 @@ const MainPage = () => {
 
     useEffect(() => {
         checkLocalStorage();
-        getUpdatedTokenPrice();
     }, []);
+
+    useEffect(() => {
+        getUpdatedTokenPrices();
+    }, [portfolioData.tokens.length]);
     
     const checkLocalStorage = () => {
         const localStorageVariable = PortfolioData.LOCAL_STORAGE_VARIABLE_NAME;
@@ -23,27 +28,32 @@ const MainPage = () => {
         }
     }
     
-    const getUpdatedTokenPrice = () => {
+    const getUpdatedTokenPrices = () => {
+        console.log(portfolioData)
         if (portfolioData.tokens.length) {
-            //const tokenIds = portfolioData.tokens.map(t => t.id).join(',');
+            const tokenIds = portfolioData.tokens.map(t => t.id).join(',');
 
-            fetch(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest`, {
+            fetch(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=${tokenIds}`, {
                 "method": "GET",
                 "headers": {
                         "X-CMC_PRO_API_KEY": "ede53949-3fbc-4b50-af2d-353e5dee260a",
                         "Access-Control-Allow-Origin": "http://localhost:1234",
                         "Access-Control-Allow-Headers": "privatekey",
                         "Access-Control-Allow-Credentials": "true"
-                    },
-                })
-                .then(resp => resp.json())
-                .then(data => updateTokenPricesLocally(data.data));
+                }
+            })
+            .then(resp => resp.json())
+            .then(data => {
+                if (data.data != undefined) {
+                    updateTokenPricesLocally(data.data);
+                }
+            });
         }
     }
 
     const updateTokenPricesLocally = (tokensData) => {
         portfolioData.tokens.forEach(token => {
-            var correspondingData = tokensData.find(t => t.id == token.id);
+            var correspondingData = tokensData[token.id];
             if (correspondingData != undefined) {
                 token.currentPrice = correspondingData.quote.USD.price;
             }
@@ -66,7 +76,7 @@ const MainPage = () => {
             token = {
                 id: tokenId,
                 name: tokenName,
-                currentPrice: 0,
+                currentPrice: newTransaction.currentPrice,
                 transactions: [],
                 amount: 0,
                 profit: 0,
@@ -78,7 +88,6 @@ const MainPage = () => {
         
         token.transactions.push(newTransaction);
         recalculateTokenStats(token, newTransaction);
-        getUpdatedTokenPrice();
 
         setPortfolioData({
             ...portfolioData,
@@ -116,7 +125,7 @@ const MainPage = () => {
             <div className="top-section">
                 <div className="current-balance">
                     <div className="current-balance-label">Current Balance</div>
-                    <div className="current-balance-amount">{portfolioData.totalBalance}</div>
+                    <div className="current-balance-amount">{formatNumber(portfolioData.totalBalance)}</div>
                 </div>
                 <button className="ui-control add-new-button" onClick={() => {setTokenSelected(null); setModalIsOpen(true)}}>
                     Add New
@@ -138,12 +147,16 @@ const MainPage = () => {
                         {portfolioData.tokens && portfolioData.tokens.map(token =>
                             <tr key={token.id}>
                                 <td>{token.name}</td>
-                                <td>{token.currentPrice}</td>
+                                <td>{formatNumber(token.currentPrice)}</td>
                                 <td>{token.amount}</td>
-                                <td>{token.profit}</td>
+                                <td>
+                                    <div>{formatNumber(token.profit)}</div>
+                                    <div>{formatNumber(token.profit/(token.currentPrice * token.amount) * 100)}%</div>
+                                    </td>
                                 <td>
                                     <button onClick={() => {setTokenSelected(token); setModalIsOpen(true)}}><FaPlus/></button>
                                     <button onClick={() => removeToken(token)}><FaTrash/></button>
+                                    <button><GrTransaction/></button>
                                 </td>
                             </tr>
                         )}
