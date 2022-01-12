@@ -1,11 +1,12 @@
 import {useEffect, useState} from "react";
 import AddTokenModal from "./AddTokenModal";
 import PortfolioData from "../configData.json";
-import {FaPlus, FaTrash} from "react-icons/fa";
-import {GrTransaction} from "react-icons/gr";
-import {formatNumber} from "./Utils";
+
+import TokenDetails from "./TokenDetails";
+import PortfolioOverview from "./PortfolioOverview";
 
 const MainPage = () => {
+    const [tokenTransactions, setTokenTransactions] = useState(null)
     const [portfolioData, setPortfolioData] = useState({tokens: [], totalBalance: 0});
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [tokenSelected, setTokenSelected] = useState(null);
@@ -15,6 +16,7 @@ const MainPage = () => {
     }, []);
 
     useEffect(() => {
+        recalculateTotalBalance();
         getUpdatedTokenPrices();
     }, [portfolioData.tokens.length]);
     
@@ -29,7 +31,6 @@ const MainPage = () => {
     }
     
     const getUpdatedTokenPrices = () => {
-        console.log(portfolioData)
         if (portfolioData.tokens.length) {
             const tokenIds = portfolioData.tokens.map(t => t.id).join(',');
 
@@ -62,7 +63,7 @@ const MainPage = () => {
         setPortfolioData({
             ...portfolioData,
             tokens: portfolioData.tokens
-        })
+        });
     }
             
     useEffect(() => {
@@ -80,11 +81,14 @@ const MainPage = () => {
                 transactions: [],
                 amount: 0,
                 profit: 0,
-                avgBuyPrice: 0
+                avgBuyPrice: 0,
+                lastTransactionId: 0
             };
 
             portfolioData.tokens.push(token);
         }
+
+        newTransaction.id = ++token.lastTransactionId;
         
         token.transactions.push(newTransaction);
         recalculateTokenStats(token, newTransaction);
@@ -95,8 +99,23 @@ const MainPage = () => {
         });
     };
 
+    const updateTokenTransactions = (updatedToken) => {
+        const token = portfolioData.tokens.find(t => t.id == updatedToken.id);
+
+        if (token != undefined) {
+            token.transactions = [...updatedToken.transactions];
+        }
+
+        // recalculateTokenStats(token, );
+
+        setPortfolioData({
+            ...portfolioData,
+            tokens: portfolioData.tokens
+        })
+    };
+
     const recalculateTokenStats = (token, newTransaction) => {
-        token.amount += newTransaction.quantity;
+        token.amount += newTransaction. quantity;
         token.profit += newTransaction.quantity * (newTransaction.currentPrice - newTransaction.pricePerToken);
         recalculateTotalBalance();
     };
@@ -105,65 +124,21 @@ const MainPage = () => {
         portfolioData.totalBalance = 0;
         portfolioData.tokens.forEach(token => {
             token.transactions.forEach(tran => {
-            portfolioData.totalBalance += tran.quantity * tran.pricePerToken;
+                portfolioData.totalBalance += tran.quantity * tran.pricePerToken;
             });
         });
     };
 
-    const removeToken = (token) => {
-        portfolioData.tokens = portfolioData.tokens.filter(t => t.id != token.id);
-        recalculateTotalBalance();
-
-        setPortfolioData({
-            ...portfolioData,
-            tokens: portfolioData.tokens
-        });
-    };
+    const seeTransactions = (token) => {
+        window.location.href = `/token/${token.id}`;
+    }
 
     return (
         <div className="app-container">
-            <div className="top-section">
-                <div className="current-balance">
-                    <div className="current-balance-label">Current Balance</div>
-                    <div className="current-balance-amount">{formatNumber(portfolioData.totalBalance)}</div>
-                </div>
-                <button className="ui-control add-new-button" onClick={() => {setTokenSelected(null); setModalIsOpen(true)}}>
-                    Add New
-                </button>
-            </div>
-            <div>
-                <div className="token-list-heading">Your Tokens</div>
-                <table className="tokens-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Amount</th>
-                            <th>Profit</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {portfolioData.tokens && portfolioData.tokens.map(token =>
-                            <tr key={token.id}>
-                                <td>{token.name}</td>
-                                <td>{formatNumber(token.currentPrice)}</td>
-                                <td>{token.amount}</td>
-                                <td>
-                                    <div>{formatNumber(token.profit)}</div>
-                                    <div>{formatNumber(token.profit/(token.currentPrice * token.amount) * 100)}%</div>
-                                    </td>
-                                <td>
-                                    <button onClick={() => {setTokenSelected(token); setModalIsOpen(true)}}><FaPlus/></button>
-                                    <button onClick={() => removeToken(token)}><FaTrash/></button>
-                                    <button><GrTransaction/></button>
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
-            {modalIsOpen && <AddTokenModal isOpen={setModalIsOpen} addTransactionToPortfolio={addTransactionToPortfolio} tokenSelected={tokenSelected}/>}
+            { tokenTransactions == null 
+                ? <PortfolioOverview portfolioData={portfolioData} setPortfolioData={setPortfolioData} setTokenSelected={setTokenSelected} setModalIsOpen={setModalIsOpen} setTokenTransactions={setTokenTransactions}/>
+                : <TokenDetails token={tokenTransactions} setTokenSelected={setTokenSelected} setModalIsOpen={setModalIsOpen} updateTokenTransactions={updateTokenTransactions} /> }
+            {modalIsOpen && <AddTokenModal isOpen={setModalIsOpen} addTransactionToPortfolio={addTransactionToPortfolio} tokenSelected={tokenSelected} />}
         </div>
     )
 };

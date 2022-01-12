@@ -9,7 +9,7 @@ const App = () => {
     <Router>
       <Routes>
           <Route path="/" element={<MainPage />}/>
-          <Route path="/token" element={<TokenDetails />}/>
+          <Route path="/token/:id" element={<TokenDetails />}/>
       </Routes>
     </Router>
   )
