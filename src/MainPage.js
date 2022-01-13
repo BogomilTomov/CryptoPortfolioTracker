@@ -99,24 +99,45 @@ const MainPage = () => {
         });
     };
 
-    const updateTokenTransactions = (updatedToken) => {
+    const updateToken = (updatedToken) => {
+        if (updatedToken == null) {
+            setTokenTransactions(null);
+            return;
+        }
+
         const token = portfolioData.tokens.find(t => t.id == updatedToken.id);
 
         if (token != undefined) {
-            token.transactions = [...updatedToken.transactions];
+            
+            if (updatedToken.transactions.length == 0) {
+                portfolioData.tokens = portfolioData.tokens.filter(t => t.id != token.id);
+                recalculateTotalBalance();
+            } else {
+                token.transactions = [...updatedToken.transactions];
+                recalculateTokenStats(token);
+            }
+
+            setPortfolioData({
+                ...portfolioData,
+                tokens: portfolioData.tokens
+            });
         }
-
-        // recalculateTokenStats(token, );
-
-        setPortfolioData({
-            ...portfolioData,
-            tokens: portfolioData.tokens
-        })
     };
 
     const recalculateTokenStats = (token, newTransaction) => {
-        token.amount += newTransaction. quantity;
-        token.profit += newTransaction.quantity * (newTransaction.currentPrice - newTransaction.pricePerToken);
+        if (newTransaction != undefined) {
+            token.amount += newTransaction.quantity;
+            token.profit += newTransaction.quantity * (newTransaction.currentPrice - newTransaction.pricePerToken);
+        } else {
+            token.amount = 0
+            token.profit = 0;
+
+            token.transactions.forEach(tran => {
+                token.amount += tran.quantity;
+                token.profit += tran.quantity * (tran.currentPrice - tran.pricePerToken);
+            });
+        }
+
         recalculateTotalBalance();
     };
 
@@ -137,7 +158,7 @@ const MainPage = () => {
         <div className="app-container">
             { tokenTransactions == null 
                 ? <PortfolioOverview portfolioData={portfolioData} setPortfolioData={setPortfolioData} setTokenSelected={setTokenSelected} setModalIsOpen={setModalIsOpen} setTokenTransactions={setTokenTransactions}/>
-                : <TokenDetails token={tokenTransactions} setTokenSelected={setTokenSelected} setModalIsOpen={setModalIsOpen} updateTokenTransactions={updateTokenTransactions} /> }
+                : <TokenDetails token={tokenTransactions} setTokenSelected={setTokenSelected} setModalIsOpen={setModalIsOpen} updateToken={updateToken} /> }
             {modalIsOpen && <AddTokenModal isOpen={setModalIsOpen} addTransactionToPortfolio={addTransactionToPortfolio} tokenSelected={tokenSelected} />}
         </div>
     )

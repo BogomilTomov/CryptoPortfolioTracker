@@ -1,26 +1,26 @@
-import { useState } from "react";
 import { FaTrash} from "react-icons/fa";
 import { formatNumber } from "./Utils";
 
-const TokenDetails = ({ token, setModalIsOpen, setTokenSelected, updateTokenTransactions }) => {
-  const removeTransaction = (transactionId) => {
-    token.transactions = token.transactions.filter(tran => tran.id != transactionId);
+const TokenDetails = ({ token, setModalIsOpen, setTokenSelected, updateToken }) => {
+  const removeTransaction = (transaction) => {
+    token.transactions = token.transactions.filter(tran => tran.id != transaction.id);
     console.log(token)
-    updateTokenTransactions(token);
+    updateToken(token, transaction);
   };
 
   return (
     <>
-    <div className="top-section">
-        <div className="current-balance">
-            <div className="current-balance-label">{token.name} Balance</div>
-            <div className="current-balance-amount">{formatNumber(token.amount * token.currentPrice)}</div>
-        </div>
-        <button className="ui-control add-new-button" onClick={() => {setTokenSelected(token); setModalIsOpen(true)}}>
-            Add Transaction
-        </button>
-    </div>
-    <div>
+      <button onClick={() => updateToken(null)}>Back</button>
+      <div className="top-section">
+          <div className="current-balance">
+              <div className="current-balance-label">{token.name} Balance</div>
+              <div className="current-balance-amount">{formatNumber(token.amount * token.currentPrice)}</div>
+          </div>
+          <button className="ui-control add-new-button" onClick={() => {setTokenSelected(token); setModalIsOpen(true)}}>
+              Add Transaction
+          </button>
+      </div>
+      <div>
         <div className="token-list-heading">Your Tokens</div>
         <table className="tokens-table">
             <thead>
@@ -45,14 +45,14 @@ const TokenDetails = ({ token, setModalIsOpen, setTokenSelected, updateTokenTran
                       {formatNumber(tran.fee)}
                     </td>
                     <td>
-                     <button onClick={() => removeTransaction(tran.id)}><FaTrash/></button>
+                      <button onClick={() => removeTransaction(tran)}><FaTrash/></button>
                     </td>
                 </tr>
               )}
             </tbody>
         </table>
-    </div>
-</>
+      </div>
+    </>
   )
 };
 
